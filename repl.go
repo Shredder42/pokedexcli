@@ -9,6 +9,7 @@ import (
 
 func startRepl() {
 	scanner := bufio.NewScanner(os.Stdin)
+	config := Config{}
 
 	for {
 		fmt.Print("Pokedex > ")
@@ -24,7 +25,7 @@ func startRepl() {
 			fmt.Println("Unknown command")
 			continue
 		} else {
-			err := command.callback()
+			err := command.callback(&config)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -46,7 +47,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(*Config) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -61,5 +62,20 @@ func getCommands() map[string]cliCommand {
 			description: "Displays a help mesage",
 			callback:    commandHelp,
 		},
+		"map": {
+			name:        "map",
+			description: "Displays next 20 locations",
+			callback:    commandMap,
+		},
+		"mapb": {
+			name:        "mapb",
+			description: "Displays previous 20 locations",
+			callback:    commandMapb,
+		},
 	}
+}
+
+type Config struct {
+	NextLocationAreaURL string
+	PrevLocationAreaURL string
 }

@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func commandExit() error {
+func commandExit(config *Config) error {
 	defer os.Exit(0)
 	fmt.Printf("Closing the Pokedex... Goodbye!\n")
 	return nil
