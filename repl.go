@@ -5,11 +5,18 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/shredder42/pokedexcli/internal/pokeapi"
 )
 
-func startRepl() {
+type config struct {
+	pokeapiClient       pokeapi.Client
+	NextLocationAreaURL *string
+	PrevLocationAreaURL *string
+}
+
+func startRepl(cfg *config) {
 	scanner := bufio.NewScanner(os.Stdin)
-	config := Config{}
 
 	for {
 		fmt.Print("Pokedex > ")
@@ -25,7 +32,7 @@ func startRepl() {
 			fmt.Println("Unknown command")
 			continue
 		} else {
-			err := command.callback(&config)
+			err := command.callback(cfg)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -47,7 +54,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*Config) error
+	callback    func(*config) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -73,9 +80,4 @@ func getCommands() map[string]cliCommand {
 			callback:    commandMapb,
 		},
 	}
-}
-
-type Config struct {
-	NextLocationAreaURL string
-	PrevLocationAreaURL string
 }
